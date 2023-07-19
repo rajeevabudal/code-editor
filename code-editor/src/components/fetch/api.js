@@ -7,8 +7,8 @@ const options={
     url:url,
     // params:params,
     headers:{
-        'X-RapidAPI-Key': '70143dc9c7msh6ff1068fea1b043p146d23jsn3df8381f9773',
-        'X-RapidAPI-Host': 'judge0-ce.p.rapidapi.com'
+        'X-RapidAPI-Key': process.env.X_RapidAPI_Key,
+        'X-RapidAPI-Host': ""
       }
 }
 console.log(options)
