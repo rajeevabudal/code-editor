@@ -4,10 +4,15 @@ import { api } from "../fetch/api";
 import { url } from "../fetch/config";
 import Editor from "./editorcomp";
 import Button from "@mui/material/Button";
+import { useDispatch } from "react-redux";
+import { getValue } from "../redux/editor";
+import "./style.css";
 
 const languageUrl = `${url}/languages`;
 const submissionUrl = `${url}/submissions`;
 export default function MainContainer() {
+  const dispatch = useDispatch();
+
   const [langauges, setLangauges] = React.useState([]);
   const [code, setCode] = React.useState("");
   React.useEffect(() => {
@@ -23,7 +28,6 @@ export default function MainContainer() {
 
   const handleExecute = async () => {
     let base64Code = btoa(code);
-    alert(base64Code);
     const params = {
       base64_encoded: "true",
       fields: "*",
@@ -42,10 +46,17 @@ export default function MainContainer() {
     };
 
     let submissionResult = await api("GET", getSubmission, submissionsParams);
-    setTimeout(async ()=>{
+    setTimeout(async () => {
       submissionResult = await api("GET", getSubmission, submissionsParams);
-      console.log(atob(submissionResult.stdout))
-    }, 2000)
+      if(submissionResult.stdout!== null){
+        console.log(atob(submissionResult.stdout));
+      dispatch(getValue(atob(submissionResult.stdout)));
+      }else{
+        console.log(atob(submissionResult.stderr));
+      dispatch(getValue(atob(submissionResult.stderr)));
+      }
+      
+    }, 2000);
 
     console.log(submissionResult.stdout);
   };
@@ -55,18 +66,24 @@ export default function MainContainer() {
   };
 
   return (
-    <div style={{ display: "flex", flexDirection: "column" }}>
+    <div>
       <div>
-        <Select
-          options={langauges}
-          label="Select langauges"
-          className="code-editor-select"
-        />
-        <Button variant="contained" onClick={handleExecute}>
-          Compile And Execute
-        </Button>
-      </div>
+        <div>
+          <Select
+            options={langauges}
+            label="Select langauges"
+            className="code-editor-select"
+          />
 
+          <Button
+            variant="contained"
+            onClick={handleExecute}
+            className="btn-compile"
+          >
+            Compile And Execute
+          </Button>
+        </div>
+      </div>
       <Editor handleEditor={handleEditor} />
     </div>
   );
