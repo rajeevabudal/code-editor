@@ -4,7 +4,7 @@ import { api } from "../fetch/api";
 import { url } from "../fetch/config";
 import Editor from "./editorcomp";
 import Button from "@mui/material/Button";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { getValue } from "../redux/editor";
 import "./style.css";
 
@@ -12,7 +12,8 @@ const languageUrl = `${url}/languages`;
 const submissionUrl = `${url}/submissions`;
 export default function MainContainer() {
   const dispatch = useDispatch();
-
+  const lang = useSelector((state:any)=>state.getValue.languages);
+  console.log(lang);
   const [langauges, setLangauges] = React.useState([]);
   const [code, setCode] = React.useState("");
   React.useEffect(() => {
@@ -24,16 +25,24 @@ export default function MainContainer() {
       .catch((err) => {
         console.log(err);
       });
-  }, []);
+      
+  }, [lang]);
 
   const handleExecute = async () => {
     let base64Code = btoa(code);
+    let id;
     const params = {
       base64_encoded: "true",
       fields: "*",
     };
+    langauges.map((language:any) =>{
+      if(language.name === lang){
+        id = language.id;
+      }
+    })  
+
     const data = {
-      language_id: 93,
+      language_id: id,
       source_code: base64Code,
     };
     const result = await api("POST", submissionUrl, params, data);
@@ -57,8 +66,6 @@ export default function MainContainer() {
       }
       
     }, 2000);
-
-    console.log(submissionResult.stdout);
   };
 
   const handleEditor = (code: any) => {
@@ -86,5 +93,5 @@ export default function MainContainer() {
       </div>
       <Editor handleEditor={handleEditor} />
     </div>
-  );
+  )
 }

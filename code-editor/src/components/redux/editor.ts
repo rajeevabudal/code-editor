@@ -2,12 +2,14 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import type { PayloadAction } from '@reduxjs/toolkit'
 
 interface EditorSlice {
-  value: String
+  value: String,
+  languages: String,
 }
 
 // Define the initial state using that type
 const initialState: EditorSlice = {
   value: "",
+  languages:"",
 }
 export const editorFetch=createAsyncThunk('',()=>{
 
@@ -19,13 +21,15 @@ export const editorSlice = createSlice({
   reducers: {
     
     getValue: (state, action: PayloadAction<String>) => {
-      console.log(action.payload);
       state.value = action.payload
-      console.log(state.value);
     },
+
+    getLangauges: (state, action: PayloadAction<String>)=>{
+      state.languages = action.payload
+    }
   },
 })
 
-export const { getValue } = editorSlice.actions
+export const { getValue, getLangauges } = editorSlice.actions
 
 export default editorSlice.reducer
