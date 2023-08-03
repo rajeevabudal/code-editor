@@ -1,3 +1,15 @@
-.btn-compile{
-    margin-top:45px !important;
+.btn-compile {
+  margin-top: 45px !important;
+}
+
+.editor-display {
+  display: flex;
+  flex-direction: row;
+}
+
+.editor-simple {
+  width: 70%;
+}
+.css-15bve07-JoySheet-root {
+  width: 30% !important;
 }

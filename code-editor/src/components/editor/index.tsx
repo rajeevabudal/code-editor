@@ -4,6 +4,8 @@ import { api } from "../fetch/api";
 import { url } from "../fetch/config";
 import Editor from "./editorcomp";
 import Button from "@mui/material/Button";
+import CircularProgress from '@mui/material/CircularProgress';
+import Sheet from '@mui/joy/Sheet';
 import { useDispatch, useSelector } from "react-redux";
 import { getValue } from "../redux/editor";
 import "./style.css";
@@ -11,8 +13,11 @@ import "./style.css";
 const languageUrl = `${url}/languages`;
 const submissionUrl = `${url}/submissions`;
 export default function MainContainer() {
+  let value;
+  value = useSelector((state:any)=>state.getValue.value);
+  console.log(value);
   const dispatch = useDispatch();
-  const lang = useSelector((state:any)=>state.getValue.languages);
+  const lang = useSelector((state: any) => state.getValue.languages);
   console.log(lang);
   const [langauges, setLangauges] = React.useState([]);
   const [code, setCode] = React.useState("");
@@ -25,7 +30,6 @@ export default function MainContainer() {
       .catch((err) => {
         console.log(err);
       });
-      
   }, [lang]);
 
   const handleExecute = async () => {
@@ -35,11 +39,11 @@ export default function MainContainer() {
       base64_encoded: "true",
       fields: "*",
     };
-    langauges.map((language:any) =>{
-      if(language.name === lang){
+    langauges.map((language: any) => {
+      if (language.name === lang) {
         id = language.id;
       }
-    })  
+    });
 
     const data = {
       language_id: id,
@@ -57,14 +61,13 @@ export default function MainContainer() {
     let submissionResult = await api("GET", getSubmission, submissionsParams);
     setTimeout(async () => {
       submissionResult = await api("GET", getSubmission, submissionsParams);
-      if(submissionResult.stdout!== null){
+      if (submissionResult.stdout !== null) {
         console.log(atob(submissionResult.stdout));
-      dispatch(getValue(atob(submissionResult.stdout)));
-      }else{
+        dispatch(getValue(atob(submissionResult.stdout)));
+      } else {
         console.log(atob(submissionResult.stderr));
-      dispatch(getValue(atob(submissionResult.stderr)));
+        dispatch(getValue(atob(submissionResult.stderr)));
       }
-      
     }, 2000);
   };
 
@@ -87,11 +90,14 @@ export default function MainContainer() {
             onClick={handleExecute}
             className="btn-compile"
           >
-            Compile And Execute
+            RUN
           </Button>
         </div>
       </div>
-      <Editor handleEditor={handleEditor} />
+      <div className="editor-display">
+        <Editor handleEditor={handleEditor} className="editor-sample" />
+        <Sheet variant="outlined" color="neutral" sx={{ p: 4 }} className="sheet-sample">{value === undefined?<CircularProgress/>:value}</Sheet>
+      </div>
     </div>
-  )
+  );
 }

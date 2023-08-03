@@ -20,7 +20,6 @@ export default function SelectComponent(props:SelectProps) {
         setData(event.target.value as string);
         dispatch(getLangauges(event.target.value));
       };
-    
   return (
     <>
      <FormControl sx={{ m: 1, width: 300 }}>
