@@ -31,6 +31,7 @@ export default function SelectComponent(props:SelectProps) {
         onChange={handleChange}
         label={label}
         className={className}
+        placeholder="Select Langauge"
       >
            <MenuItem disabled value="">
             <em>{label}</em>
